@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <children>
+      <TextField fx:id="enrollmentNumber" disable="true" layoutX="204.0" layoutY="62.0" prefHeight="25.0" prefWidth="246.0" />
+      <Label layoutX="40.0" layoutY="62.0" prefHeight="25.0" prefWidth="164.0" text="ENROLLMENT NUMBER" textOverrun="CLIP" />
+      <Label layoutX="41.0" layoutY="95.0" prefHeight="25.0" prefWidth="115.0" text="NAME" textOverrun="CLIP" />
+      <TextField fx:id="studentName" layoutX="204.0" layoutY="95.0" prefHeight="25.0" prefWidth="246.0" />
+      <TextField fx:id="studentContactNumber" layoutX="203.0" layoutY="165.0" prefHeight="25.0" prefWidth="246.0" />
+      <Label layoutX="40.0" layoutY="165.0" prefHeight="25.0" prefWidth="115.0" text="CONTACT NUMBER" textOverrun="CLIP" />
+      <Label layoutX="41.0" layoutY="202.0" prefHeight="25.0" prefWidth="115.0" text="GENDER" textOverrun="CLIP" />
+      <RadioButton fx:id="studentSexMale" layoutX="213.0" layoutY="206.0" mnemonicParsing="false" text="MALE">
+         <toggleGroup>
+            <ToggleGroup fx:id="gender" />
+         </toggleGroup></RadioButton>
+      <RadioButton fx:id="studentSexFemale" layoutX="326.0" layoutY="206.0" mnemonicParsing="false" text="FEMALE" toggleGroup="$gender" />
+      <Label layoutX="40.0" layoutY="236.0" prefHeight="25.0" prefWidth="115.0" text="BRANCH" textOverrun="CLIP" />
+      <ChoiceBox fx:id="branchChoiceBox" layoutX="203.0" layoutY="236.0" onKeyPressed="#onBranchChoiceBoxClick" prefHeight="25.0" prefWidth="246.0" AnchorPane.leftAnchor="203.0">
+          <items>
+              <FXCollections fx:factory="observableArrayList">
+                  <String fx:value="Computer Science and Engineering" />
+                  <String fx:value="Information and Technology" />
+                  <String fx:value="Mechanical Engineering" />
+                  <String fx:value="Civil Engineering" />
+                  <String fx:value="Electronics and Telecommunication Engineering" />
+                  <String fx:value="Electrical Engineering" />
+              </FXCollections>
+          </items>
+         <effect>
+            <Blend />
+         </effect>
+      </ChoiceBox>
+      <Label alignment="CENTER" layoutX="97.0" layoutY="14.0" prefHeight="48.0" prefWidth="318.0" text="STUDENT SIGNUP" textOverrun="CLIP">
+         <font>
+            <Font name="System Bold" size="25.0" />
+         </font>
+      </Label>
+      <PasswordField fx:id="studentPassword" layoutX="203.0" layoutY="273.0" prefHeight="25.0" prefWidth="246.0" />
+      <PasswordField fx:id="studentConfirmPassword" layoutX="203.0" layoutY="316.0" prefHeight="25.0" prefWidth="246.0" />
+      <Label layoutX="40.0" layoutY="273.0" prefHeight="25.0" prefWidth="115.0" text="SET PASSWORD" textOverrun="CLIP" />
+      <Label layoutX="41.0" layoutY="316.0" prefHeight="25.0" prefWidth="129.0" text="CONFIRM PASSWORD" textOverrun="CLIP" />
+    <Button layoutX="98.0" layoutY="382.0" mnemonicParsing="false" onMouseClicked="#cancelButtonClick" prefHeight="25.0" prefWidth="115.0" text="CANCEL" />
+      <Button layoutX="301.0" layoutY="382.0" mnemonicParsing="false" onMouseClicked="#submitButtonClick" prefHeight="25.0" prefWidth="115.0" text="SUBMIT" />
+      <Label layoutX="40.0" layoutY="131.0" prefHeight="25.0" prefWidth="115.0" text="DATE OF BIRTH" textOverrun="CLIP" />
+      <DatePicker fx:id="studentDob" layoutX="204.0" layoutY="131.0" prefHeight="21.0" prefWidth="246.0" />
+   </children>
+</AnchorPane>
