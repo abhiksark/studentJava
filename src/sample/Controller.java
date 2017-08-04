@@ -29,7 +29,8 @@ public class Controller implements Initializable {
 
     private static final String DB_NAME = "studentDatabase.db";
     private static final String CONNECTION_STRING = "jdbc:sqlite:.\\databases\\" + DB_NAME;
-    private static final String TABLE_STUDENT = "student";
+    private static final String TABLE_STUDENT = "student_data";
+    private static final String TABLE_STUDENT_LOGIN = "student_login";
     private static final String COLUMN_STUDENT_NAME = "name";
     private static final String COLUMN_STUDENT_PHONE = "phone";
     private static final String COLUMN_ENROLLMENT_NUMBER = "eno";
@@ -74,11 +75,19 @@ public class Controller implements Initializable {
             statement = conn.createStatement();
             statement.execute(String.format("CREATE TABLE IF NOT EXISTS %s(%s INTEGER PRIMARY KEY NOT NULL ," +
                                             " %s TEXT NOT NULL ,%s INTEGER NOT NULL , %s TEXT NOT NULL,%s DATE NOT NULL," +
-                                            " %s TEXT NOT NULL,%s TEXT NOT NULL,%s TEXT NOT NULL)"
+                                            " %s TEXT NOT NULL,%s TEXT NOT NULL)"
                     ,TABLE_STUDENT,COLUMN_ENROLLMENT_NUMBER, COLUMN_STUDENT_NAME, COLUMN_STUDENT_PHONE
-                    ,COLUMN_STUDENT_EMAIL,COLUMN_STUDENT_DOB,COLUMN_STUDENT_GENDER,COLUMN_STUDENT_BRANCH,COLUMN_STUDENT_PASSWORD));
+                    ,COLUMN_STUDENT_EMAIL,COLUMN_STUDENT_DOB,COLUMN_STUDENT_GENDER,COLUMN_STUDENT_BRANCH));
 
-            
+            statement.execute(String.format("CREATE TABLE IF NOT EXISTS %s(%s INTEGER PRIMARY KEY NOT NULL,%s TEXT NOT NULL)"
+                    ,TABLE_STUDENT_LOGIN,COLUMN_ENROLLMENT_NUMBER,COLUMN_STUDENT_PASSWORD));
+
+            RadioButton radioGender = (RadioButton) gender.getSelectedToggle(); // casting radio button object
+            String genderValue = radioGender.getText();
+            StudentData studentData = new StudentData(enrollmentNumber.getText(),studentName.getText(),studentContactNumber.getText(),studentEmailID.getText() ,studentDob.getValue(),genderValue,branchChoiceBox.getValue().toString());
+            StudentLogin studentLogin = new StudentLogin(enrollmentNumber.getText(),studentPassword.getText(),studentConfirmPassword.getText());
+
+            //insertStudent(statement, enrollmentNumber.getText(),studentName.getText(),studentContactNumber.getText() );
             /*
             validationCheck(name,phone,email);
             insertSTUDENT(statement, name.getText(),Integer.parseInt(phone.getText()), email.getText());
@@ -101,15 +110,28 @@ public class Controller implements Initializable {
             System.out.println("Wrong Number Format");
         }
 
+
+
         // clearing the field after entering the details
         studentName.clear();
         studentContactNumber.clear();
         studentEmailID.clear();
         studentDob.setValue(null);
         gender.selectToggle(null);
-
+        branchChoiceBox.setValue(null);
+        studentPassword.clear();
+        studentConfirmPassword.clear();
     }
-
+//
+//    public static void insertStudent(Statement statement, ) throws SQLException {
+//        String executionStatement;
+//        executionStatement = String.format("INSERT INTO %s (%s,%s,%s) VALUES ('%s',%d,'%s' );"
+//                ,TABLE_STUDENT,COLUMN_ENROLLMENT_NUMBER, COLUMN_STUDENT_NAME, COLUMN_STUDENT_PHONE
+//                ,COLUMN_STUDENT_EMAIL,COLUMN_STUDENT_DOB,COLUMN_STUDENT_GENDER,COLUMN_STUDENT_BRANCH,COLUMN_STUDENT_PASSWORD
+//                , name, phone, email);
+//        statement.execute(executionStatement);
+//    }
+    
     public void cancelButtonClick(MouseEvent mouseEvent) {
     }
 }
