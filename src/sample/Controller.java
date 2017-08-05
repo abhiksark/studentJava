@@ -7,10 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -39,7 +36,7 @@ public class Controller implements Initializable {
     private static final String COLUMN_STUDENT_GENDER = "gender";
     private static final String COLUMN_STUDENT_BRANCH = "branch";
     private static final String COLUMN_STUDENT_PASSWORD = "password";
-
+    public static  Integer eNumberValue=100;
     private static Statement statement;
     private static Connection conn;
 
@@ -48,7 +45,18 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        enrollmentNumber.setText("100");
+        try {
+            conn = DriverManager.getConnection(CONNECTION_STRING);
+            statement = conn.createStatement();
+            ResultSet result = statement.executeQuery(String.format("SELECT MAX(%s) FROM %s",COLUMN_ENROLLMENT_NUMBER,TABLE_STUDENT_LOGIN));
+            eNumberValue=result.getInt(1)+1;
+            result.close();
+            statement.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        enrollmentNumber.setText(eNumberValue.toString());
     }
 
     public void onBranchChoiceBoxClick(ActionEvent actionEvent) {
@@ -56,8 +64,6 @@ public class Controller implements Initializable {
     }
 
     public void submitButtonClick(MouseEvent mouseEvent) {
-
-
 //        System.out.println(enrollmentNumber.getText());
 //        System.out.println(studentDob.getValue());
 //        System.out.println(studentName.getText());
@@ -82,10 +88,14 @@ public class Controller implements Initializable {
             statement.execute(String.format("CREATE TABLE IF NOT EXISTS %s(%s INTEGER PRIMARY KEY NOT NULL,%s TEXT NOT NULL)"
                     ,TABLE_STUDENT_LOGIN,COLUMN_ENROLLMENT_NUMBER,COLUMN_STUDENT_PASSWORD));
 
+            //validationCheck(name,phone,email);
+
             RadioButton radioGender = (RadioButton) gender.getSelectedToggle(); // casting radio button object
             String genderValue = radioGender.getText();
             StudentData studentData = new StudentData(enrollmentNumber.getText(),studentName.getText(),studentContactNumber.getText(),studentEmailID.getText() ,studentDob.getValue(),genderValue,branchChoiceBox.getValue().toString());
             StudentLogin studentLogin = new StudentLogin(enrollmentNumber.getText(),studentPassword.getText(),studentConfirmPassword.getText());
+            insertStudentLogin(statement,studentLogin);
+            insertStudent(statement,studentData);
 
             //insertStudent(statement, enrollmentNumber.getText(),studentName.getText(),studentContactNumber.getText() );
             /*
@@ -110,8 +120,6 @@ public class Controller implements Initializable {
             System.out.println("Wrong Number Format");
         }
 
-
-
         // clearing the field after entering the details
         studentName.clear();
         studentContactNumber.clear();
@@ -121,17 +129,32 @@ public class Controller implements Initializable {
         branchChoiceBox.setValue(null);
         studentPassword.clear();
         studentConfirmPassword.clear();
+        eNumberValue = eNumberValue +1;
+        enrollmentNumber.setText(eNumberValue.toString());
     }
-//
-//    public static void insertStudent(Statement statement, ) throws SQLException {
-//        String executionStatement;
-//        executionStatement = String.format("INSERT INTO %s (%s,%s,%s) VALUES ('%s',%d,'%s' );"
-//                ,TABLE_STUDENT,COLUMN_ENROLLMENT_NUMBER, COLUMN_STUDENT_NAME, COLUMN_STUDENT_PHONE
-//                ,COLUMN_STUDENT_EMAIL,COLUMN_STUDENT_DOB,COLUMN_STUDENT_GENDER,COLUMN_STUDENT_BRANCH,COLUMN_STUDENT_PASSWORD
-//                , name, phone, email);
-//        statement.execute(executionStatement);
-//    }
-    
+
+
+    public static void insertStudent(Statement statement,StudentData studentData) throws SQLException {
+        String executionStatement;
+
+        executionStatement = String.format("INSERT INTO %s (%s,%s,%s,%s,%s,%s,%s) VALUES (%d,'%s',%d,'%s','%s','%s','%s' );"
+                ,TABLE_STUDENT,COLUMN_ENROLLMENT_NUMBER, COLUMN_STUDENT_NAME, COLUMN_STUDENT_PHONE
+                ,COLUMN_STUDENT_EMAIL,COLUMN_STUDENT_DOB,COLUMN_STUDENT_GENDER,COLUMN_STUDENT_BRANCH
+                ,Integer.parseInt(studentData.geteNumber()),studentData.getStudentName(),
+                Integer.parseInt(studentData.getStudentPhone()),studentData.getStudentEmail(),
+                studentData.getStudentDob(),studentData.getGender(),studentData.getBranch());
+
+        statement.execute(executionStatement);
+    }
+
+    public static void insertStudentLogin(Statement statement,StudentLogin studentLogin) throws SQLException {
+        String executionStatement;
+        executionStatement = String.format("INSERT INTO %s (%s,%s) VALUES (%d,'%s' );"
+                ,TABLE_STUDENT_LOGIN,COLUMN_ENROLLMENT_NUMBER,COLUMN_STUDENT_PASSWORD
+                , Integer.parseInt(studentLogin.geteNumber()), studentLogin.getStudentPassword());
+        statement.execute(executionStatement);
+    }
+
     public void cancelButtonClick(MouseEvent mouseEvent) {
     }
 }
